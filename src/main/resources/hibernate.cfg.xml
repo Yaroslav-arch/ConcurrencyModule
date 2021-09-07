@@ -8,9 +8,9 @@
 
         <!-- JDBC Database connection settings -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="connection.url">jdbc:postgresql://ec2-63-33-14-215.eu-west-1.compute.amazonaws.com/d2n0g44s6qask4</property>
-        <property name="connection.username">zuwpoywbxvaqfm</property>
-        <property name="connection.password">9d776c78a0db40fc33d416beaf8bc9056174218965fcdcc9a172e5c9d1755acb</property>
+        <property name="connection.url">jdbc:postgresql:localhost/postgres</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">root</property>
 
         <!-- JDBC connection pool settings ... using built-in test pool -->
         <property name="connection.pool_size">1</property>
@@ -24,8 +24,8 @@
         <!-- Set the current session context -->
         <property name="current_session_context_class">thread</property>
 
-        <!-- Drop and re-create the database schema on startup -->
-        <!--        <property name="hbm2ddl.auto">create</property>-->
+        <!-- Drop and re-create the database schema on startup-->
+        <property name="hbm2ddl.auto">update</property>
 
         <!-- dbcp connection pool configuration -->
         <property name="hibernate.dbcp.initialSize">5</property>

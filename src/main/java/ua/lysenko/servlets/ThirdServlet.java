@@ -33,7 +33,7 @@ App app = new App();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.getWriter().write("Welcome to the Racecourse \n Please place your bet \n");
-        resp.getWriter().write("Set quantity of horses with parameter 'quantity'");
+        resp.getWriter().write("Set quantity of horses with parameter 'quantity'\n");
         resp.getWriter().write("Set the number of chosen horse with parameter 'chosen'");
     }
 
@@ -42,6 +42,7 @@ App app = new App();
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Counter.incrementCounter();
         app.run(gson.fromJson(req.getReader(), Bet.class));
+        resp.getWriter().write("Race finished, results available at 'localhost:8080/race/" + Counter.getCounter());
     }
 
     @Override

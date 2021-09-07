@@ -13,7 +13,6 @@ import java.time.LocalDate;
 public class RaceModel {
 
     @Column(name = "race_id")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long raceId;
 
     @Column(name = "horse_id")

@@ -1,5 +1,6 @@
 package ua.lysenko;
 
+import ua.lysenko.dao.RaceModelDao;
 import ua.lysenko.entity.Bet;
 import ua.lysenko.entity.Counter;
 import ua.lysenko.entity.Horse;
@@ -14,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class App {
+    RaceModelDao dao = new RaceModelDao();
 
     public void run(Bet bet) throws InterruptedException, ExecutionException {
         List<Race> tasks = new ArrayList<>();
@@ -23,15 +25,21 @@ public class App {
         }
         LocalDate localDate = LocalDate.now();
         List<Future<Horse>> futures = executor.invokeAll(tasks);
-        List<Horse> results = new ArrayList<>();
+        List<Horse> horses = new ArrayList<>();
         for (Future<Horse> future : futures) {
-            Horse horse = future.get();
-            RaceModel model = horseToModel(horse, localDate, bet);
-            results.add(horse);
-
+           Horse horse = future.get();
+            horses.add(horse);
         }
+        horses.sort((h1, h2) -> (int) (h2.getResultTime() - h1.getResultTime()));
+        for (int i = 0; i < horses.size(); i++) {
+            horses.get(i).setPosition(i + 1);
+        }
+        for (Horse horse : horses) {
+            dao.saveRaceModel(horseToModel(horse, localDate, bet));
+        }
+
         executor.shutdown();
-        System.out.println(results);
+//        System.out.println(horses);
     }
 
     private static RaceModel horseToModel(Horse horse, LocalDate localDate, Bet bet) {
@@ -39,13 +47,10 @@ public class App {
         model.setRaceId(Counter.getCounter());
         model.setHorseId(horse.getNumber());
         model.setResult(horse.getResultTime());
-//        model.setPosition();
+        model.setPosition(horse.getPosition());
         model.setDate(localDate);
-        if (model.getHorseId() == bet.getChosen()) {
-            model.setBet(true);
-        } else {
-            model.setBet(false);
-        }
+        model.setBet(model.getHorseId() == bet.getChosen());
+
         return model;
     }
 }

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -34,8 +35,19 @@ public class SecondServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         long raceId = Long.parseLong(req.getPathInfo().substring(1));
-        resp.getWriter().write(gson.toJson(raceModel));
-        raceModelDao.getInfoAboutRace(raceId);
+//        resp.getWriter().write(req.getPathInfo().substring(1));
+
+        List<RaceModel> infoAboutRace = raceModelDao.getInfoAboutRace(raceId);
+        resp.getWriter().write("The race was held on " + infoAboutRace.get(0).getDate());
+        resp.getWriter().write("We had " + infoAboutRace.size() + "competitors");
+
+        for (RaceModel model : infoAboutRace) {
+            if (model.isBet()) {
+                resp.getWriter().write("Position: " + model.getPosition() + "Horse number: " + model.getHorseId() + " - Your bet");
+            } else {
+                resp.getWriter().write("Position: " + model.getPosition() + "Horse number: " + model.getHorseId());
+            }
+        }
     }
 
     @Override

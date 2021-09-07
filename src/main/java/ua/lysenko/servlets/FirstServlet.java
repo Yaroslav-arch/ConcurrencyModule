@@ -1,6 +1,8 @@
 package ua.lysenko.servlets;
 
 import com.google.gson.Gson;
+import ua.lysenko.dao.RaceModelDao;
+import ua.lysenko.entity.RaceModel;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -8,14 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class FirstServlet extends HttpServlet {
 
-    private ConcurrentLinkedQueue<Visit> visits = new ConcurrentLinkedQueue<>();
-    Gson gson = new Gson();
-
+    RaceModelDao dao = new RaceModelDao();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -30,16 +31,16 @@ public class FirstServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.getWriter().write(gson.toJson(visits));
+        resp.getWriter().write("Set number of horse with parameter 'horseId'");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Visit visit = gson.fromJson(req.getReader(), Visit.class);
-        while (visits.size()>=3){
-            visits.remove();
+        List<RaceModel> races = dao.getRacesByHorseId(Long.parseLong(req.getParameter("horseId")));
+        resp.getWriter().write("Selected horse has participated " + races.size() + " races");
+        for (RaceModel model : races) {
+            resp.getWriter().write(model.getDate() + "Position: " + model.getPosition());
         }
-        visits.add(visit);
     }
 
     @Override

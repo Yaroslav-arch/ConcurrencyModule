@@ -2,10 +2,11 @@ package ua.lysenko.dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+//import org.hibernate.query.Query;
 import ua.lysenko.entity.RaceModel;
 import ua.lysenko.utils.HibernateUtil;
 
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,30 @@ public class RaceModelDao {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            String hql = " FROM RaceModel racemodel WHERE racemodel.raceId = :id ";
+            String hql = " FROM RaceModel racemodel WHERE racemodel.raceId = :id order by racemodel.position asc";
+            Query query = session.createQuery(hql);
+            query.setParameter("id",id);
+            results = query.getResultList();
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    public List <RaceModel> getRacesByHorseId(long id) {
+
+        Transaction transaction = null;
+        List<RaceModel> results = new ArrayList<>();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            String hql = " FROM RaceModel racemodel WHERE racemodel.horseId = :id order by racemodel.date asc";
             Query query = session.createQuery(hql);
             query.setParameter("id",id);
             results = query.getResultList();
