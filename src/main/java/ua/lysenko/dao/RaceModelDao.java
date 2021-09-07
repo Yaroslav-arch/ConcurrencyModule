@@ -6,6 +6,9 @@ import org.hibernate.query.Query;
 import ua.lysenko.entity.RaceModel;
 import ua.lysenko.utils.HibernateUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RaceModelDao {
     public void saveRaceModel(RaceModel raceModel) {
         Transaction transaction = null;
@@ -40,28 +43,28 @@ public class RaceModelDao {
         return raceModel;
     }
 
-//    public int getLastRaceNumber() {
-//
-//        Transaction transaction = null;
-//        int totalCalls = 0;
-//        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-//            transaction = session.beginTransaction();
-//
-//            String hql = "SELECT raceId FROM race r GROUP BY raceId order by count(*) DESC";//TODO
-//            Query query = session.createQuery(hql);
-//            Object callRecords = query.getSingleResult();
-//            totalCalls = Integer.parseInt(String.valueOf(callRecords));
-//
-//            transaction.commit();
-//
-//        } catch (Exception e) {
-//            if (transaction != null) {
-//                transaction.rollback();
-//            }
-//            e.printStackTrace();
-//        }
-//        return totalCalls;
-//    }
+    public List <RaceModel> getInfoAboutRace(long id) {
+
+        Transaction transaction = null;
+        List<RaceModel> results = new ArrayList<>();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            String hql = " FROM RaceModel racemodel WHERE racemodel.raceId = :id ";
+            Query query = session.createQuery(hql);
+            query.setParameter("id",id);
+            results = query.getResultList();
+
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+        return results;
+    }
 
     public void updateRaceModel(RaceModel raceModel) {
         Transaction transaction = null;

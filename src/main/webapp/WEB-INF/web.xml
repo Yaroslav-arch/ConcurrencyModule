@@ -23,7 +23,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>second-servlet</servlet-name>
-        <url-pattern>/race/{id}</url-pattern>
+        <url-pattern>/race/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>third-servlet</servlet-name>

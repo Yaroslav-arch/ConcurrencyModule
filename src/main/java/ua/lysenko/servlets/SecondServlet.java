@@ -1,6 +1,8 @@
 package ua.lysenko.servlets;
 
 import com.google.gson.Gson;
+import ua.lysenko.dao.RaceModelDao;
+import ua.lysenko.entity.RaceModel;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,6 +16,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SecondServlet extends HttpServlet {
 
     Gson gson = new Gson();
+    RaceModel raceModel = new RaceModel();
+    RaceModelDao raceModelDao = new RaceModelDao();
 
 
     @Override
@@ -29,16 +33,9 @@ public class SecondServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.getWriter().write(gson.toJson(visits));
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Visit visit = gson.fromJson(req.getReader(), Visit.class);
-        while (visits.size()>=3){
-            visits.remove();
-        }
-        visits.add(visit);
+        long raceId = Long.parseLong(req.getPathInfo().substring(1));
+        resp.getWriter().write(gson.toJson(raceModel));
+        raceModelDao.getInfoAboutRace(raceId);
     }
 
     @Override

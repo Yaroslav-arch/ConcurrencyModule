@@ -41,7 +41,6 @@ App app = new App();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Counter.incrementCounter();
-//        gson.fromJson(req.getReader(), Bet.class);
         app.run(gson.fromJson(req.getReader(), Bet.class));
     }
 
