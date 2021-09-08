@@ -2,7 +2,6 @@ package ua.lysenko.dao;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-//import org.hibernate.query.Query;
 import ua.lysenko.entity.RaceModel;
 import ua.lysenko.utils.HibernateUtil;
 
@@ -16,6 +15,23 @@ public class RaceModelDao {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.save(raceModel);
+            transaction.commit();
+
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void saveAllRaceModels(List<RaceModel> raceModels) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            raceModels.forEach(session::save);
+
             transaction.commit();
 
         } catch (Exception e) {
@@ -44,7 +60,7 @@ public class RaceModelDao {
         return raceModel;
     }
 
-    public List <RaceModel> getInfoAboutRace(long id) {
+    public List<RaceModel> getInfoAboutRace(long id) {
 
         Transaction transaction = null;
         List<RaceModel> results = new ArrayList<>();
@@ -53,7 +69,7 @@ public class RaceModelDao {
 
             String hql = " FROM RaceModel racemodel WHERE racemodel.raceId = :id order by racemodel.position asc";
             Query query = session.createQuery(hql);
-            query.setParameter("id",id);
+            query.setParameter("id", id);
             results = query.getResultList();
 
             transaction.commit();
@@ -67,16 +83,16 @@ public class RaceModelDao {
         return results;
     }
 
-    public List <RaceModel> getRacesByHorseId(long id) {
+    public List<RaceModel> getRacesByHorseId(long id) {
 
         Transaction transaction = null;
         List<RaceModel> results = new ArrayList<>();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
-            String hql = " FROM RaceModel racemodel WHERE racemodel.horseId = :id order by racemodel.date asc";
+            String hql = " FROM RaceModel racemodel WHERE racemodel.horseId = :id";
             Query query = session.createQuery(hql);
-            query.setParameter("id",id);
+            query.setParameter("id", id);
             results = query.getResultList();
 
             transaction.commit();

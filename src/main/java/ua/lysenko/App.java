@@ -19,27 +19,28 @@ public class App {
 
     public void run(Bet bet) throws InterruptedException, ExecutionException {
         List<Race> tasks = new ArrayList<>();
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 10; i++) {
+        List<RaceModel> models = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool((int) bet.getQuantity());
+        for (int i = 0; i < bet.getQuantity(); i++) {
             tasks.add(new Race(i));
         }
         LocalDate localDate = LocalDate.now();
         List<Future<Horse>> futures = executor.invokeAll(tasks);
         List<Horse> horses = new ArrayList<>();
         for (Future<Horse> future : futures) {
-           Horse horse = future.get();
+            Horse horse = future.get();
             horses.add(horse);
         }
-        horses.sort((h1, h2) -> (int) (h2.getResultTime() - h1.getResultTime()));
+        horses.sort((h1, h2) -> (int) (h1.getResultTime() - h2.getResultTime()));
         for (int i = 0; i < horses.size(); i++) {
             horses.get(i).setPosition(i + 1);
         }
         for (Horse horse : horses) {
-            dao.saveRaceModel(horseToModel(horse, localDate, bet));
+            models.add(horseToModel(horse, localDate, bet));
         }
+        dao.saveAllRaceModels(models);
 
         executor.shutdown();
-//        System.out.println(horses);
     }
 
     private static RaceModel horseToModel(Horse horse, LocalDate localDate, Bet bet) {

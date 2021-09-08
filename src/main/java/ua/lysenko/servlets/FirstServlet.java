@@ -1,6 +1,5 @@
 package ua.lysenko.servlets;
 
-import com.google.gson.Gson;
 import ua.lysenko.dao.RaceModelDao;
 import ua.lysenko.entity.RaceModel;
 
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class FirstServlet extends HttpServlet {
@@ -36,10 +34,11 @@ public class FirstServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        List<RaceModel> races = dao.getRacesByHorseId(Long.parseLong(req.getParameter("horseId")));
-        resp.getWriter().write("Selected horse has participated " + races.size() + " races");
+        long horseId = Long.parseLong(req.getParameter("horseId"));
+        List<RaceModel> races = dao.getRacesByHorseId(horseId);
+        resp.getWriter().write("Selected horse has participated in " + races.size() + " races:\n");
         for (RaceModel model : races) {
-            resp.getWriter().write(model.getDate() + "Position: " + model.getPosition());
+            resp.getWriter().write(model.getDate() + "; Position: " + model.getPosition()+"\n");
         }
     }
 

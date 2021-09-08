@@ -10,7 +10,11 @@ import java.time.LocalDate;
         @UniqueConstraint(columnNames = {"race_id", "horse_id"}, name = "RACE_HORSE_CONSTRAINT"),
         @UniqueConstraint(columnNames = {"race_id", "position"}, name = "RACE_POSITION_CONSTRAINT")
 })
+@Entity
 public class RaceModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "race_id")
     private long raceId;
@@ -18,15 +22,16 @@ public class RaceModel {
     @Column(name = "horse_id")
     private long horseId;
 
-    @Column
+    @Column(name = "result")
     private long result;
 
-    @Column
+    @Column(name = "position")
     private long position;
 
-    @Column
+    @Column(name = "date")
     private LocalDate date;
 
-    @Column
+    @Column(name = "bet")
     private boolean bet;
+
 }
