@@ -34,7 +34,7 @@ public class SecondServlet extends HttpServlet {
 
         List<RaceModel> infoAboutRace = raceModelDao.getInfoAboutRace(raceId);
         resp.getWriter().write("The race was held on " + infoAboutRace.get(0).getDate() + "\n");
-        resp.getWriter().write("We had " + infoAboutRace.size() + "competitors \n");
+        resp.getWriter().write("We had " + infoAboutRace.size() + " competitors \n");
 
         for (RaceModel model : infoAboutRace) {
             if (model.isBet()) {

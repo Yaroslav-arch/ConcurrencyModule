@@ -17,7 +17,7 @@ import java.io.IOException;
 public class ThirdServlet extends HttpServlet {
 
     Gson gson = new Gson();
-App app = new App();
+    App app = new App();
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -41,7 +41,11 @@ App app = new App();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Counter.incrementCounter();
-        app.run(gson.fromJson(req.getReader(), Bet.class));
+        Bet bet = new Bet();
+//        app.run(gson.fromJson(req.getReader(), Bet.class));
+        bet.setQuantity(Long.parseLong(req.getParameter("quantity")));
+        bet.setChosen(Long.parseLong(req.getParameter("chosen")));
+        app.run(bet);
         resp.getWriter().write("Race finished, results available at 'localhost:8080/race/" + Counter.getCounter());
     }
 
